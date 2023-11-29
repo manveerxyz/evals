@@ -12,6 +12,9 @@ from typing import Union
 from lm_eval import evaluator, utils
 from lm_eval.tasks import initialize_tasks, include_path
 from lm_eval.api.registry import ALL_TASKS
+from lm_eval.record import HttpRecorder
+from lm_eval.utils import generate_run_id
+from lm_eval.config import get_config
 
 
 def _handle_non_serializable(o):
@@ -126,6 +129,9 @@ def cli_evaluate(args: Union[argparse.Namespace, None] = None) -> None:
 
     initialize_tasks(args.verbosity)
 
+    # Get local config that contains the API Key
+    config = get_config()
+
     if args.limit:
         eval_logger.warning(
             " --limit SHOULD ONLY BE USED FOR TESTING."
@@ -196,6 +202,11 @@ def cli_evaluate(args: Union[argparse.Namespace, None] = None) -> None:
 
     eval_logger.info(f"Selected Tasks: {task_names}")
 
+    recorder = HttpRecorder(
+        run_id=generate_run_id(),
+        config=config,
+    )
+
     results = evaluator.simple_evaluate(
         model=args.model,
         model_args=args.model_args,
@@ -218,6 +229,8 @@ def cli_evaluate(args: Union[argparse.Namespace, None] = None) -> None:
         dumped = json.dumps(results, indent=2, default=_handle_non_serializable)
         if args.show_config:
             print(dumped)
+
+        scholar_results_url = recorder.record_final_report(results)
 
         batch_sizes = ",".join(map(str, results["config"]["batch_sizes"]))
 
@@ -242,6 +255,9 @@ def cli_evaluate(args: Union[argparse.Namespace, None] = None) -> None:
         print(evaluator.make_table(results))
         if "groups" in results:
             print(evaluator.make_table(results, "groups"))
+
+        if scholar_results_url:
+            print(f"View results at {scholar_results_url}")
 
 
 if __name__ == "__main__":
