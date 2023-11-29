@@ -716,3 +716,8 @@ def divide(iterable, n) -> List[Iterator]:
         ret.append(iter(seq[start:stop]))
 
     return ret
+
+
+def generate_run_id():
+    import uuid
+    return str(uuid.uuid4())
