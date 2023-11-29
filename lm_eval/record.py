@@ -33,14 +33,16 @@ class RunConfig:
 
 @dataclasses.dataclass
 class FinalReport:
-    results: Dict[str, Dict[str, float]]  # dict of task name to dict of metric name to value
+    results: Dict[
+        str, Dict[str, float]
+    ]  # dict of task name to dict of metric name to value
     versions: Dict[str, int]  # dict of task name to version
     configs: Dict[str, TaskConfig]
     config: RunConfig
     git_hash: str
 
 
-class HttpRecorder():
+class HttpRecorder:
     def __init__(
         self,
         run_id: str,
@@ -100,11 +102,13 @@ class HttpRecorder():
             evals_data = final_report.versions
         elif isinstance(final_report, dict):
             # Assuming the dictionary has keys 'config', 'results', and 'versions'
-            config_data = final_report.get('config', {})
-            results_data = final_report.get('results', {})
-            evals_data = final_report.get('versions', {})
+            config_data = final_report.get("config", {})
+            results_data = final_report.get("results", {})
+            evals_data = final_report.get("versions", {})
         else:
-            raise TypeError("final_report must be either a FinalReport instance or a dictionary")
+            raise TypeError(
+                "final_report must be either a FinalReport instance or a dictionary"
+            )
 
         data = {
             "run_id": self.run_id,
