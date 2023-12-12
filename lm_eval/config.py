@@ -1,8 +1,11 @@
 import os
 import configparser
 from dataclasses import dataclass
+from print_color import print
 
-APP_NAME = "scholar-evals"
+APP_SHORT_NAME = "sevals"
+APP_NAME = "scholar-eval"
+APP_VERSION = "0.0.2"
 
 
 @dataclass
@@ -18,7 +21,9 @@ def get_config_path():
     return os.path.join(config_dir, "config.ini")
 
 
-def get_config() -> Config:
+def get_config(
+    require_api_key: bool = False,
+) -> Config:
     config_path = get_config_path()
     config = configparser.ConfigParser()
 
@@ -29,10 +34,19 @@ def get_config() -> Config:
             return Config(api_key=key)
 
     # key not found in config, prompt the user
-    api_key = input(
-        "\nAPI Key not found in config.\nEnter your Scholar API Key (or press enter to skip): "
-    ).strip()
+    print("Scholar API Key not found in config.", color="yellow")
+    input_str = "Enter your Scholar API Key (or press enter to skip): "
+    if require_api_key:
+        input_str = "Enter your Scholar API Key: "
+    api_key = input(input_str).strip()
     if not api_key or api_key == "":
+        if require_api_key:
+            print("\nAPI Key is required.", color="red")
+            print(
+                "You can get an API Key from: https://usescholar.org/api-keys",
+                color="red",
+            )
+            exit(1)
         return None
 
     set_api_key(api_key)

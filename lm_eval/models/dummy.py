@@ -23,8 +23,11 @@ class DummyLM(LM):
     def generate_until(self, requests):
         res = []
 
-        for ctx, _ in requests:
-            res.append("lol")
+        for request in requests:
+            # Assuming `request` is an object with an attribute that holds the context
+            # Adjust the attribute names according to your actual `Instance` object structure
+            ctx = request.args[0]  # or whatever the correct way to access context is
+            res.append("this is a dummy response")  # Your dummy response
             assert ctx.strip() != ""
 
         return res

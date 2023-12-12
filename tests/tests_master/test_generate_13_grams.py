@@ -9,7 +9,7 @@ from lm_eval.decontamination.archiver import Archive, TextReader
 
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("scholar-eval")
 
 
 def test_generate_13_grams_1(caplog):

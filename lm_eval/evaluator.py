@@ -15,17 +15,17 @@ import lm_eval.api.registry
 from lm_eval.utils import (
     positional_deprecated,
     run_task_tests,
-    make_table,
-    create_iterator,
     get_git_commit_hash,
     simple_parse_args_string,
-    eval_logger,
+    get_model_class_by_name,
 )
+import lm_eval.scholar_api as scholar_api
+from lm_eval.logger import eval_logger
 
 
 @positional_deprecated
 def simple_evaluate(
-    model,
+    model_name,
     model_args=None,
     tasks=[],
     num_fewshot=None,
@@ -43,8 +43,8 @@ def simple_evaluate(
 ):
     """Instantiate and evaluate a model on a list of tasks.
 
-    :param model: Union[str, LM]
-        Name of model or LM object, see lm_eval.models.get_model
+    :param model_name: str
+        Name of model, can be a huggingface model name, a path to a model file, or a model name like gpt3
     :param model_args: Optional[str]
         String arguments for each model class, see LM.create_from_arg_string.
         Ignored if `model` argument is a LM object.
@@ -94,20 +94,28 @@ def simple_evaluate(
         if gen_kwargs == "":
             gen_kwargs = None
 
-    if isinstance(model, str):
-        if model_args is None:
-            model_args = ""
-        lm = lm_eval.api.registry.get_model(model).create_from_arg_string(
-            model_args,
-            {
-                "batch_size": batch_size,
-                "max_batch_size": max_batch_size,
-                "device": device,
-            },
-        )
-    else:
-        assert isinstance(model, lm_eval.api.model.LM)
-        lm = model
+    # This is different from the original lm-harness implementation.
+    # Rather than having a separate model and model_args, we just have a single model_name argument,
+    # and we have to correlate that model_name with a model class.
+    model_args = model_args or ""
+    lm_class, additional_model_args = get_model_class_by_name(model_name)
+    if additional_model_args:
+        if model_args:
+            model_args += ","
+        model_args += additional_model_args
+
+    eval_logger.info(
+        f"Detected model class {lm_class.__name__} from model name {model_name}"
+    )
+
+    lm = lm_class.create_from_arg_string(
+        model_args,
+        {
+            "batch_size": batch_size,
+            "max_batch_size": max_batch_size,
+            "device": device,
+        },
+    )
 
     if use_cache is not None:
         print(f"Using cache at {use_cache + '_rank' + str(lm.rank) + '.db'}")
@@ -160,9 +168,8 @@ def simple_evaluate(
     if lm.rank == 0:
         # add info about the model and few shot config
         results["config"] = {
-            "model": model
-            if isinstance(model, str)
-            else model.model.config._name_or_path,
+            "model": model_name,
+            "model_class": lm_class.__name__,
             "model_args": model_args,
             "batch_size": batch_size,
             "batch_sizes": list(lm.batch_sizes.values())
@@ -313,7 +320,18 @@ def evaluate(
     ### Run LM on inputs, get all outputs ###
     # execute each type of request
     for reqtype, reqs in requests.items():
-        eval_logger.info("Running {} requests".format(reqtype))
+        # `reqs` contains objects like this:
+        # Instance(
+        #   request_type='loglikelihood',
+        #   doc={'text': '“Yes, Grandmother, and don’t worry, I won’t forget my water when I go wander.”\nHer brothers laughed a little only because the comment was so cute. \n“Wonderful my little Wanderer, because I would hate to think of you forgetting an important rule like that.”\n“I would never forget the rules, Grandmother'}, arguments=('“Yes, Grandmother, and don’t worry, I won’t forget my water when I go wander.”\nHer brothers laughed a little only because the comment was so cute. \n“Wonderful my little Wanderer, because I would hate to think of you forgetting an important rule like that.”\n“I would never forget the rules,', ' Grandmother'), idx=0, metadata=('lambada_openai', 5152, 1),
+        #   resps=[],
+        #   filtered_resps={},
+        #   task_name='lambada_openai',
+        #   doc_id=5152,
+        #   repeats=1,
+        # )
+
+        print("Running {} requests".format(reqtype))
         # create `K` copies of each request `req` based off `K = req.repeats`
         cloned_reqs = []
         for req in reqs:
@@ -380,6 +398,7 @@ def evaluate(
                         "resps": [req.resps for req in requests],
                         "filtered_resps": [req.filtered_resps[key] for req in requests],
                     }
+                    scholar_api.record_output(task_name, example)
                     example.update(metrics)
                     samples[task_name].append(example)
                 for metric, value in metrics.items():

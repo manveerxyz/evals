@@ -16,17 +16,10 @@ import gc
 import torch
 import transformers
 
+from print_color import print
 from jinja2 import BaseLoader, Environment, StrictUndefined
 from itertools import islice
-
-import logging
-
-logging.basicConfig(
-    format="%(asctime)s,%(msecs)03d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s",
-    datefmt="%Y-%m-%d:%H:%M:%S",
-    level=logging.INFO,
-)
-eval_logger = logging.getLogger("lm-eval")
+from lm_eval.logger import eval_logger
 
 SPACING = " " * 47
 
@@ -718,7 +711,70 @@ def divide(iterable, n) -> List[Iterator]:
     return ret
 
 
-def generate_run_id():
-    import uuid
+def get_model_class_by_name(model_name):
+    """
+    Get the model class by name, where `model_name` can be a huggingface model name, a path to a model file, or a model name like gpt3
 
-    return str(uuid.uuid4())
+    Args:
+        model_name: str
+            The model name to get the class for
+
+    Returns:
+        - The model class
+        - Additional model_args to pass to the model class
+    """
+    import lm_eval.api.registry
+    import lm_eval.models
+
+    if model_name == "dummy":
+        print("Setting up dummy model.")
+        return lm_eval.api.registry.get_model("dummy"), ""
+    elif lm_eval.models.huggingface.is_valid_huggingface_model(model_name):
+        print(f"Setting up model {model_name} using HuggingFace.")
+        return lm_eval.api.registry.get_model("hf-auto"), f"pretrained={model_name}"
+    elif lm_eval.models.openai_completions.is_valid_openai_model(model_name):
+        if lm_eval.models.openai_completions.is_valid_openai_chat_model(model_name):
+            print(f"Setting up model {model_name} using OpenAI's Chat API.")
+            return (
+                lm_eval.api.registry.get_model("openai-chat-completions"),
+                f"engine={model_name}",
+            )
+        # otherwise, it's a normal model (non-chat)
+        print(f"Setting up model {model_name} using OpenAI's API.")
+        return (
+            lm_eval.api.registry.get_model("openai-completions"),
+            f"engine={model_name}",
+        )
+    else:
+        print(f"Unknown model name: {model_name}.", color="red")
+        print("Valid model names are:", color="yellow")
+        print(
+            " - A huggingface model name, e.g. mistralai/Mistral-7B-v0.1",
+            color="yellow",
+        )
+        print(" - A path to a model file, e.g. ./my-model", color="yellow")
+        print(" - An OpenAI model name like gpt-4", color="yellow")
+        exit(1)
+
+
+def fuzzy_match(query, choices, cutoff=70):
+    """
+    Returns a fuzzy match for the query from the choices, or None if no match is found.
+    """
+    from thefuzz import fuzz
+
+    fuzz_matches = [(choice, fuzz.ratio(query, choice)) for choice in choices]
+    fuzz_matches = [match for match in fuzz_matches if match[1] >= cutoff]
+    # Sort by score, descending
+    fuzz_matches.sort(key=lambda match: match[1], reverse=True)
+    # Get the choices, excluding the scores
+    matches = [match[0] for match in fuzz_matches]
+
+    # Add choices that contain the query
+    matches += [
+        choice
+        for choice in choices
+        if query in choice.lower() and choice not in matches
+    ]
+
+    return matches

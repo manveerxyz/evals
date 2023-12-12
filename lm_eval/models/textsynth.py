@@ -20,7 +20,7 @@ from lm_eval.api.model import LM
 from lm_eval.api.registry import register_model
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("scholar-eval")
 
 
 def textsynth_completion(**kwargs):
