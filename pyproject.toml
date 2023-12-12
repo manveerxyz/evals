@@ -3,8 +3,8 @@ requires = ["setuptools>=40.8.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sevals"
-version = "0.0.1"
+name = "seval"
+version = "0.0.2"
 authors = [
     {name="Scholar Platforms", email="info@usescholar.org"}
 ]
@@ -46,7 +46,7 @@ include = ["lm_eval*"]
 lm_eval = ["**/*.yaml", "tasks/**/*"]
 
 [project.scripts]
-sevals = "lm_eval.__main__:cli_evaluate"
+seval = "lm_eval.__main__:cli_evaluate"
 
 [project.optional-dependencies]
 dev = ["black", "flake8", "pre-commit", "pytest", "pytest-cov"]
@@ -67,13 +67,13 @@ gptq = ["auto-gptq[triton] @ git+https://github.com/PanQiWei/AutoGPTQ"]
 anthropic = ["anthropic"]
 openai = ["openai", "tiktoken"]
 all = [
-    "sevals[dev]",
-    "sevals[testing]",
-    "sevals[linting]",
-    "sevals[multilingual]",
-    "sevals[sentencepiece]",
-    "sevals[promptsource]",
-    "sevals[gptq]",
-    "sevals[anthropic]",
-    "sevals[openai]"
+    "seval[dev]",
+    "seval[testing]",
+    "seval[linting]",
+    "seval[multilingual]",
+    "seval[sentencepiece]",
+    "seval[promptsource]",
+    "seval[gptq]",
+    "seval[anthropic]",
+    "seval[openai]"
 ]

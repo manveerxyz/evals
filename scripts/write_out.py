@@ -4,8 +4,9 @@ import json
 import os
 import random
 from lm_eval import tasks
-from lm_eval.utils import join_iters, eval_logger
+from lm_eval.utils import join_iters
 from lm_eval.tasks import initialize_tasks, include_path
+from lm_eval.logger import eval_logger
 
 EXAMPLE_DIVIDER = "!!@@##@@!! -- Example {i}\n"
 

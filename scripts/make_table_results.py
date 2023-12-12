@@ -9,7 +9,7 @@ import json
 
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("scholar-eval")
 
 
 def make_table(result_dict):

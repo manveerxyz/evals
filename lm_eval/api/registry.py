@@ -4,7 +4,7 @@ from lm_eval.api.model import LM
 
 import logging
 
-eval_logger = logging.getLogger("lm-eval")
+eval_logger = logging.getLogger("scholar-eval")
 
 MODEL_REGISTRY = {}
 

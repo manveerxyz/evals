@@ -10,7 +10,7 @@ from tqdm_multiprocess import TqdmMultiProcessPool
 import logging
 from tqdm_multiprocess.logger import setup_logger_tqdm
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("scholar-eval")
 
 
 def process_task(

@@ -6,6 +6,31 @@ from lm_eval import utils
 from lm_eval.api.model import LM
 from lm_eval.api.registry import register_model
 
+KNOWN_OPENAI_MODEL_PREFIXES = [
+    "gpt-2",
+    "gpt-3",
+    "gpt-3.5",
+    "gpt-4",
+    "davinci",
+    "curie",
+    "babbage",
+    "ada",
+]
+
+
+def is_valid_openai_model(model_name: str) -> bool:
+    """Check if model is valid OpenAI API model.
+
+    :param model_name: str
+        Name of model
+    :return: bool
+        Whether model is valid OpenAI API model
+    """
+    for prefix in KNOWN_OPENAI_MODEL_PREFIXES:
+        if model_name.startswith(prefix):
+            return True
+    return False
+
 
 def get_result(response: dict, ctxlen: int) -> Tuple[float, bool]:
     """Process results from OpenAI API response.

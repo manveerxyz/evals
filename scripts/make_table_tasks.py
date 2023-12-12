@@ -9,7 +9,7 @@ from pytablewriter import MarkdownTableWriter
 
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("scholar-eval")
 
 
 def check(tf):

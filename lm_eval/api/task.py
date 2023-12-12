@@ -39,6 +39,7 @@ from lm_eval.api.registry import (
     OUTPUT_TYPE_REGISTRY,
     AGGREGATION_REGISTRY,
 )
+from lm_eval.logger import eval_logger
 
 ALL_OUTPUT_TYPES = [
     "loglikelihood",
@@ -48,11 +49,9 @@ ALL_OUTPUT_TYPES = [
 ]
 
 
-eval_logger = logging.getLogger("lm-eval")
-
-
 @dataclass
 class TaskConfig(dict):
+    schema_version: str = "0.0.2"
     # task naming/registry
     task: str = None
     task_alias: str = None

@@ -38,7 +38,7 @@ from lm_eval.decontamination.archiver import TextArchive, Reader
 import logging
 from tqdm_multiprocess.logger import setup_logger_tqdm
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("scholar-eval")
 
 terminate = False
 

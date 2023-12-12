@@ -27,6 +27,22 @@ from typing import List, Optional, Union
 eval_logger = utils.eval_logger
 
 
+def is_valid_huggingface_model(model_name_or_path: str) -> bool:
+    """Checks if a given model name is valid for Huggingface."""
+    try:
+        # Suppress logging from transformers
+        transformers.logging.set_verbosity_error()
+
+        # Attempt to load the model configuration
+        transformers.AutoConfig.from_pretrained(model_name_or_path)
+
+        # If the above line doesn't raise an exception, the model likely exists
+        return True
+    except Exception:
+        # If any exception is raised, the model likely doesn't exist
+        return False
+
+
 def _get_accelerate_args(
     device_map_option: Optional[str] = "auto",
     max_memory_per_gpu: Optional[Union[int, str]] = None,
