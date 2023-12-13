@@ -4,6 +4,11 @@ This is built on [Eleuther AI's LM Evaluation Harness](https://github.com/Eleuth
 1. A simpler command-line interface
 2. A UI to visualize results and view model outputs
 
+<img width="1440" alt="Screenshot 2023-12-12 at 8 58 55 PM" src="https://github.com/scholar-org/scholar-evals/assets/16143968/e7612e96-3de7-408a-8b1c-fa1b6758d414">
+
+<img width="1440" alt="Screenshot 2023-12-12 at 8 59 10 PM" src="https://github.com/scholar-org/scholar-evals/assets/16143968/6d262a2b-45d9-422f-bdf5-ff8cc8c60fe4">
+
+
 ## Installation
 
 ```bash
@@ -16,7 +21,37 @@ pip install sevals
 sevals <model> <task> [options]
 ```
 
-Docstring:
+### Examples
+
+Mock/Dummy model:
+```bash
+sevals dummy lambada_openai
+```
+
+Local model:
+```bash
+sevals ./path/to/model lambada_openai
+```
+
+HuggingFace model:
+```bash
+sevals hf mistralai/Mistral-7B-v0.1 lambada_openai
+```
+
+OpenAI API:
+```bash
+sevals gpt-3.5-turbo lambada_openai
+```
+
+### Tasks
+
+Full list of tasks:
+```bash
+sevals --list-tasks
+```
+
+### Documentation
+
 ```bash
 % sevals --help
 usage: sevals [-h] [--model_args MODEL_ARGS] [--gen_kwargs GEN_KWARGS] [--list-tasks [search string]] [--list-projects] [-p PROJECT] [--num_fewshot NUM_FEWSHOT] [--batch_size BATCH_SIZE]
@@ -50,33 +85,4 @@ optional arguments:
   --include_path INCLUDE_PATH
                         Additional path to include if there are external tasks to include.
   --verbose             Whether to print verbose/detailed logs.
-```
-
-### Examples
-
-Mock/Dummy model:
-```bash
-sevals dummy lambada_openai
-```
-
-Local model:
-```bash
-sevals ./path/to/model lambada_openai
-```
-
-HuggingFace model:
-```bash
-sevals hf mistralai/Mistral-7B-v0.1 lambada_openai
-```
-
-OpenAI API:
-```bash
-sevals gpt-3.5-turbo lambada_openai
-```
-
-### Tasks
-
-Full list of tasks:
-```bash
-sevals --list-tasks
 ```
