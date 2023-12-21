@@ -4,10 +4,9 @@ This is built on [Eleuther AI's LM Evaluation Harness](https://github.com/Eleuth
 1. A simpler command-line interface
 2. A UI to visualize results and view model outputs ([view example](https://usescholar.org/runs/cb249e62-a99f-468d-8eb2-b804fe31579a/results))
 
-<img width="1440" alt="Screenshot 2023-12-12 at 8 58 55 PM" src="https://github.com/scholar-org/scholar-evals/assets/16143968/e7612e96-3de7-408a-8b1c-fa1b6758d414">
+<img width="1440" alt="Screenshot 2023-12-20 at 7 48 32 PM" src="https://github.com/scholar-org/scholar-evals/assets/16143968/34763d52-f61e-4944-b941-65ae0cc6d9f1">
 
-<img width="1440" alt="Screenshot 2023-12-12 at 8 59 10 PM" src="https://github.com/scholar-org/scholar-evals/assets/16143968/6d262a2b-45d9-422f-bdf5-ff8cc8c60fe4">
-
+<img width="1440" alt="Screenshot 2023-12-20 at 7 49 12 PM" src="https://github.com/scholar-org/scholar-evals/assets/16143968/1423cc83-abc9-4239-90d1-3c2b77ab2f33">
 
 ## Installation
 
@@ -25,22 +24,22 @@ sevals <model> <task> [options]
 
 Mock/Dummy model:
 ```bash
-sevals dummy lambada_openai
+sevals dummy gsm8k
 ```
 
 Local model:
 ```bash
-sevals ./path/to/model lambada_openai
+sevals ./path/to/model gsm8k
 ```
 
 HuggingFace model:
 ```bash
-sevals hf mistralai/Mistral-7B-v0.1 lambada_openai
+sevals mistralai/Mistral-7B-v0.1 gsm8k
 ```
 
 OpenAI API:
 ```bash
-sevals gpt-3.5-turbo lambada_openai
+sevals gpt-3.5-turbo gsm8k
 ```
 
 ### Tasks
