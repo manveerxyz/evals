@@ -44,7 +44,7 @@ E.g.:
         "tasks",
         nargs="?",  # This makes the argument optional
         default=None,
-        help="To get full list of tasks, use the command sevals --list-tasks",
+        help="To get full list of tasks, use the command sevals --list_tasks",
     )
     parser.add_argument(
         "--model_args",
@@ -62,14 +62,14 @@ E.g.:
     )
 
     parser.add_argument(
-        "--list-tasks",
+        "--list_tasks",
         type=str,
         metavar="[search string]",
         default=None,
         help="List all available tasks, that optionally match a search string, and exit.",
     )
     parser.add_argument(
-        "--list-projects",
+        "--list_projects",
         action="store_true",
         help="List all projects you have on Scholar, and exit.",
     )
@@ -152,6 +152,7 @@ def cli_evaluate(args: Union[argparse.Namespace, None] = None) -> None:
             )
         )
         sys.exit()
+    # list all tasks
     if args.tasks is None or args.list_tasks:
         # if a search string was passed, filter tasks
         if args.list_tasks is not None and args.list_tasks != "":
@@ -160,7 +161,7 @@ def cli_evaluate(args: Union[argparse.Namespace, None] = None) -> None:
 
             if not matches:
                 print(
-                    f"No tasks matching '{search_string}'. Try `sevals --list-tasks` for a list of available tasks.",
+                    f"No tasks matching '{search_string}'. Try `sevals --list_tasks` for a list of available tasks.",
                     color="yellow",
                 )
                 exit(1)
@@ -204,10 +205,15 @@ def cli_evaluate(args: Union[argparse.Namespace, None] = None) -> None:
                 missing = ", ".join(task_missing)
                 eval_logger.error(f"Tasks were not found: {missing}\n")
                 print(
-                    f"Tasks {missing} were not found. Try `sevals --list-tasks` for a list of available tasks.",
+                    f"Tasks {missing} were not found. Try `sevals --list_tasks` for a list of available tasks.",
                     color="yellow",
                 )
                 exit(1)
+    # We only support one task at a time for now.
+    # TODO: support multiple tasks
+    if len(task_names) > 1:
+        print("Multiple tasks are not supported yet.", color="yellow")
+        sys.exit()
 
     if args.output_path:
         path = Path(args.output_path)
@@ -238,6 +244,8 @@ def cli_evaluate(args: Union[argparse.Namespace, None] = None) -> None:
 
     eval_logger.info(f"Selected Tasks: {task_names}")
 
+    # We organize results into projects on Scholar.
+    # If a project is not specified, we prompt the user to select one.
     project_id = args.project
     if args.project is None:
         print("Project (-p, --project) not specified.", color="yellow")
@@ -250,7 +258,9 @@ def cli_evaluate(args: Union[argparse.Namespace, None] = None) -> None:
             )
             project_id = "default"
         else:
-            choices = [project["display_name"] for project in projects]
+            choices = [
+                f"{project['display_name']} ({project['slug']})" for project in projects
+            ]
             choices.append("(Create a new project)")
             cli = Bullet(
                 prompt="Select a project to save results to: ",
@@ -265,20 +275,23 @@ def cli_evaluate(args: Union[argparse.Namespace, None] = None) -> None:
                 ],  # Background color when selected
                 pad_right=5,  # Additional padding
             )
-            project_name = cli.launch()
-            if project_name == "(Create a new project)":
+            project_name_with_slug = cli.launch()
+            if project_name_with_slug == "(Create a new project)":
                 project_name = input("Enter a name for the new project: ")
                 # set project_id to the slug of the new project,
                 # it'll get automatically made on init_run
                 project_id = project_name
                 print(f"Using project: {project_name}")
             else:
+                project_name = (project_name_with_slug.split(" (")[0] or "").strip()
                 project_id = next(
                     project["slug"]
                     for project in projects
                     if project["display_name"] == project_name
                 )
                 print(f"Using project: {project_name} ({project_id})")
+    else:
+        print(f"Using project: {project_id}")
 
     eval_logger.info(f"Recording results in project: {project_id}")
 
@@ -302,6 +315,7 @@ def cli_evaluate(args: Union[argparse.Namespace, None] = None) -> None:
         samples = results.pop("samples")
         dumped = json.dumps(results, indent=2, default=_handle_non_serializable)
 
+        # record results on Scholar
         scholar_results_url = api.record_final_report(
             versions=results["versions"],
             results=results["results"],

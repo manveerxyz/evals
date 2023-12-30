@@ -1,4 +1,4 @@
-# Scholar Eval (sevals)
+# Scholar Evals (sevals)
 
 This is built on [Eleuther AI's LM Evaluation Harness](https://github.com/EleutherAI/lm-evaluation-harness) but has:
 1. A simpler command-line interface
@@ -13,6 +13,10 @@ This is built on [Eleuther AI's LM Evaluation Harness](https://github.com/Eleuth
 ```bash
 pip install sevals
 ```
+
+### API Keys
+
+Go to [usescholar.org/api-keys](https://usescholar.org/api-keys) to get an API Key, then enter it into the `sevals` CLI when prompted.
 
 ## Usage
 
@@ -46,14 +50,14 @@ sevals gpt-3.5-turbo gsm8k
 
 Full list of tasks:
 ```bash
-sevals --list-tasks
+sevals --list_tasks
 ```
 
 ### Documentation
 
 ```bash
 % sevals --help
-usage: sevals [-h] [--model_args MODEL_ARGS] [--gen_kwargs GEN_KWARGS] [--list-tasks [search string]] [--list-projects] [-p PROJECT] [--num_fewshot NUM_FEWSHOT] [--batch_size BATCH_SIZE]
+usage: sevals [-h] [--model_args MODEL_ARGS] [--gen_kwargs GEN_KWARGS] [--list_tasks [search string]] [--list_projects] [-p PROJECT] [--num_fewshot NUM_FEWSHOT] [--batch_size BATCH_SIZE]
               [-o [dir/file.jsonl] [DIR]] [--include_path INCLUDE_PATH] [--verbose]
               [model] [tasks]
 
@@ -63,7 +67,7 @@ positional arguments:
                         - HuggingFace Model: mistralai/Mistral-7B-v0.1
                         - OpenAI Model: gpt-3
                         - Local Model: ./path/to/model
-  tasks                 To get full list of tasks, use the command sevals --list-tasks
+  tasks                 To get full list of tasks, use the command sevals --list_tasks
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -71,9 +75,9 @@ optional arguments:
                         String arguments for model, e.g. 'dtype=float32'
   --gen_kwargs GEN_KWARGS
                         String arguments for model generation on greedy_until tasks, e.g. `temperature=0,top_k=0,top_p=0`
-  --list-tasks [search string]
+  --list_tasks [search string]
                         List all available tasks, that optionally match a search string, and exit.
-  --list-projects       List all projects you have on Scholar, and exit.
+  --list_projects       List all projects you have on Scholar, and exit.
   -p PROJECT, --project PROJECT
                         ID of Scholar project to store runs/results in.
   --num_fewshot NUM_FEWSHOT

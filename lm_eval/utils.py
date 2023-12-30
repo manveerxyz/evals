@@ -754,6 +754,17 @@ def get_model_class_by_name(model_name):
         )
         print(" - A path to a model file, e.g. ./my-model", color="yellow")
         print(" - An OpenAI model name like gpt-4", color="yellow")
+        if lm_eval.models.huggingface.does_model_name_match_huggingface_pattern(
+            model_name
+        ):
+            print(
+                "\nNote: If you're sure you're using a valid huggingface model name, you may need to update transformers.",
+                color="yellow",
+            )
+            print(
+                "You can do this by running `pip install transformers --upgrade`.",
+                color="yellow",
+            )
         exit(1)
 
 
@@ -774,7 +785,7 @@ def fuzzy_match(query, choices, cutoff=70):
     matches += [
         choice
         for choice in choices
-        if query in choice.lower() and choice not in matches
+        if query is not None and query in choice.lower() and choice not in matches
     ]
 
     return matches

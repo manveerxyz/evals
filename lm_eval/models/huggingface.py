@@ -28,6 +28,24 @@ from typing import List, Optional, Union, Tuple
 eval_logger = utils.eval_logger
 
 
+def does_model_name_match_huggingface_pattern(model_name: str) -> bool:
+    """
+    Does input model name match Huggingface's model name format?
+
+    Huggingface's model name format is defined as follows:
+    - The model name must be a string.
+    - Typically is of the form {username}/{model_id}.
+    - Not a directory path.
+    """
+    if not isinstance(model_name, str):
+        return False
+    if "/" not in model_name:
+        return False
+    if os.path.isdir(model_name):
+        return False
+    return True
+
+
 def is_valid_huggingface_model(model_name_or_path: str) -> bool:
     """Checks if a given model name is valid for Huggingface."""
     try:

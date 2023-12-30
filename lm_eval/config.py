@@ -4,8 +4,8 @@ from dataclasses import dataclass
 from print_color import print
 
 APP_SHORT_NAME = "sevals"
-APP_NAME = "scholar-eval"
-APP_VERSION = "0.0.2"
+APP_NAME = "scholar-evals"
+APP_VERSION = "0.0.3"
 
 
 @dataclass
