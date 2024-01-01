@@ -2,7 +2,7 @@
 
 This is built on [Eleuther AI's LM Evaluation Harness](https://github.com/EleutherAI/lm-evaluation-harness) but has:
 1. A simpler command-line interface
-2. A UI to visualize results and view model outputs ([view example](https://usescholar.org/runs/cb249e62-a99f-468d-8eb2-b804fe31579a/results))
+2. A UI to visualize results and view model outputs ([view example results](https://usescholar.org/runs/cb249e62-a99f-468d-8eb2-b804fe31579a/results))
 
 <img width="1440" alt="Screenshot 2023-12-20 at 7 48 32 PM" src="https://github.com/scholar-org/scholar-evals/assets/16143968/34763d52-f61e-4944-b941-65ae0cc6d9f1">
 
