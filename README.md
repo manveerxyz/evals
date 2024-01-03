@@ -4,9 +4,9 @@ This is built on [Eleuther AI's LM Evaluation Harness](https://github.com/Eleuth
 1. A simpler command-line interface
 2. A UI to visualize results and view model outputs ([view example results](https://usescholar.org/runs/cb249e62-a99f-468d-8eb2-b804fe31579a/results))
 
-<img width="1440" alt="Screenshot 2023-12-20 at 7 48 32 PM" src="https://github.com/scholar-org/scholar-evals/assets/16143968/34763d52-f61e-4944-b941-65ae0cc6d9f1">
+<img width="1440" alt="Screenshot 2024-01-02 at 8 52 23 PM" src="https://github.com/scholar-org/scholar-evals/assets/16143968/e2a7d233-a772-4a50-a90a-fdef8079e2df">
 
-<img width="1440" alt="Screenshot 2023-12-20 at 7 49 12 PM" src="https://github.com/scholar-org/scholar-evals/assets/16143968/1423cc83-abc9-4239-90d1-3c2b77ab2f33">
+<img width="1440" alt="Screenshot 2024-01-02 at 8 52 39 PM" src="https://github.com/scholar-org/scholar-evals/assets/16143968/a9f966e1-c31c-42dd-9c92-0deea50883e6">
 
 ## Installation
 
