@@ -64,6 +64,7 @@ E.g.:
     parser.add_argument(
         "--list_tasks",
         type=str,
+        nargs="?",  # This makes the argument optional
         metavar="[search string]",
         default=None,
         help="List all available tasks, that optionally match a search string, and exit.",
