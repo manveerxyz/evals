@@ -27,24 +27,21 @@ sevals <model> <task> [options]
 
 ### Examples
 
-Mock/Dummy model:
 ```bash
+# Mock/Dummy model
 sevals dummy gsm8k
-```
 
-Local model:
-```bash
+# Local model
 sevals ./path/to/model gsm8k
-```
 
-HuggingFace model:
-```bash
+# HuggingFace model
 sevals mistralai/Mistral-7B-v0.1 gsm8k
-```
 
-OpenAI API:
-```bash
+# OpenAI API
 sevals gpt-3.5-turbo gsm8k
+
+# Multiple GPUs
+accelerate launch --no-python sevals dummy gsm8k
 ```
 
 ### Tasks
